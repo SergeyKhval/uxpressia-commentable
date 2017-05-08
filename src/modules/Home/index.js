@@ -13,6 +13,10 @@ function Home() {
         Simple text
       </Commentable>
 
+      <Commentable objectId="3">
+        <img src="http://lorempixel.com/400/200/sports/" width={400} height={200} alt="placeholder"/>
+      </Commentable>
+
       <Comments/>
     </div>
   );

@@ -1,0 +1,31 @@
+.comments {
+  padding: 0 2rem;
+  position: relative;
+
+  &__header {
+    align-items: center;
+    border-bottom: 1px solid black;
+    display: flex;
+
+    h2 {
+      flex-grow: 1;
+    }
+  }
+
+  &__footer {
+    border-top: 1px solid black;
+    position: fixed;
+    right: 2rem;
+    bottom: 0;
+    left: 2rem;
+  }
+}
+
+.comment-form {
+  align-items: baseline;
+  display: flex;
+
+  &__input {
+    flex-grow: 1;
+  }
+}

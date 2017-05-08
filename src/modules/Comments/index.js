@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import Drawer from 'material-ui/Drawer';
 import Comment from '../Comment';
@@ -9,6 +11,7 @@ import {
   addComment as addCommentAction,
   unsetCommentable as unsetCommentableAction,
 } from './actions';
+import './style.scss';
 
 class Comments extends Component {
   static propTypes = {
@@ -41,8 +44,16 @@ class Comments extends Component {
     })
   }
 
+  handleFormSubmit(e) {
+    const { commentableId, addComment } = this.props;
+
+    e.preventDefault();
+    addComment(commentableId, this.state.comment);
+    this.setState({ comment: '' });
+  }
+
   render() {
-    const { commentableId, comments, addComment, unsetCommentable } = this.props;
+    const { commentableId, comments, unsetCommentable } = this.props;
 
     return (
       <Drawer
@@ -53,14 +64,34 @@ class Comments extends Component {
         onRequestChange={unsetCommentable}
       >
         <div className="comments">
-          {comments.map(c => <Comment comment={c.comment} key={c.id}/>)}
+          <div className="comments__header">
+            <h2>Object {commentableId}</h2>
+            <IconButton iconClassName="material-icons" onTouchTap={() => unsetCommentable()}>close</IconButton>
+
+          </div>
+
+          <div className="comments__body">
+            {comments.map(c => <Comment comment={c.comment} key={c.id}/>)}
+          </div>
+
+          <div className="comments__footer">
+            <form onSubmit={::this.handleFormSubmit} className="comment-form">
+              <div className="comment-form__input">
+                <TextField
+                  id="root-comment"
+                  value={this.state.comment}
+                  onChange={::this.handleInputChange}
+                  hintText="Leave comment or @mention someone"
+                  fullWidth
+                  multiLine
+                />
+              </div>
+              <div className="comment-form__button">
+                <FlatButton type="submit" label="Submit"/>
+              </div>
+            </form>
+          </div>
         </div>
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          addComment(commentableId, this.state.comment);
-        }}>
-          <TextField id="root-comment" onChange={::this.handleInputChange}/>
-        </form>
       </Drawer>
     )
       ;
@@ -77,7 +108,7 @@ function mapStateToProps({ commentable, comments }) {
 function mapDispatchToProps(dispatch) {
   return {
     fetchComments: commentableId => dispatch(fetchCommentsAction(commentableId)),
-    addComment: (commentableId, comment) => dispatch(addCommentAction(commentableId, comment)),
+    addComment: (commentableId, comment) => addCommentAction(commentableId, comment),
     unsetCommentable: open => dispatch(unsetCommentableAction(open)),
   }
 }

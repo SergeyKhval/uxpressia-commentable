@@ -1,11 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import FlatButton from 'material-ui/FlatButton';
 import { setCommentable as setCommentableAction } from './actions';
+import './style.scss';
 
 function Commentable({ objectId, setCommentable, children }) {
   return (
-    <div onClick={() => setCommentable(objectId)}>{children}</div>
+    <div className="commentable">
+      <div className="commentable__overlay">
+        <FlatButton onTouchTap={() => setCommentable(objectId)} label="Comments"/>
+      </div>
+      {children}
+    </div>
   );
 }
 
