@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
-import TextField from 'material-ui/TextField';
+// import TextField from 'material-ui/TextField';
 import Drawer from 'material-ui/Drawer';
+import { MentionsInput, Mention } from 'react-mentions';
 import Comment from '../Comment';
 import {
   fetchComments as fetchCommentsAction,
@@ -77,14 +78,9 @@ class Comments extends Component {
           <div className="comments__footer">
             <form onSubmit={::this.handleFormSubmit} className="comment-form">
               <div className="comment-form__input">
-                <TextField
-                  id="root-comment"
-                  value={this.state.comment}
-                  onChange={::this.handleInputChange}
-                  hintText="Leave comment or @mention someone"
-                  fullWidth
-                  multiLine
-                />
+                <MentionsInput value={this.state.comment} onChange={::this.handleInputChange}>
+                  <Mention trigger="@" data={[{ id: 1, display: 'Sergey' }, { id: 2, display: 'Liza' }]}/>
+                </MentionsInput>
               </div>
               <div className="comment-form__button">
                 <FlatButton type="submit" label="Submit"/>
