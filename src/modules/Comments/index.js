@@ -72,7 +72,7 @@ class Comments extends Component {
           </div>
 
           <div className="comments__body">
-            {comments.map(c => <Comment comment={c.comment} key={c.id}/>)}
+            {comments.map(c => <Comment comment={c.comment} commentId={c.id} key={c.id}/>)}
           </div>
 
           <div className="comments__footer">
