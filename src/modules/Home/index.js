@@ -12,17 +12,11 @@ function Home() {
       </AppBar>
 
       <section className="commentable-objects">
-        <Commentable objectId="1">
-          Simple text
-        </Commentable>
-
-        <Commentable objectId="2">
-          Simple text
-        </Commentable>
-
         <Commentable objectId="3">
           <img src="http://lorempixel.com/400/200/sports/" width={400} height={200} alt="placeholder"/>
-        </Commentable></section>
+        </Commentable>
+      </section>
+
       <Comments/>
     </div>
   );

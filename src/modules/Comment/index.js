@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import Timestamp from 'react-timestamp';
 import ReactMarkdown from 'react-markdown';
 import CommentInput from '../CommentInput';
@@ -54,7 +56,7 @@ class Comment extends Component {
     const { editComment, commentId } = this.props;
     e.preventDefault();
 
-    editComment(commentId, this.state.editedComment);
+    editComment(commentId, { edited: true, comment: this.state.editedComment });
 
     this.setState({
       edit: false,
@@ -62,8 +64,15 @@ class Comment extends Component {
     })
   }
 
+  updateStatus(e, key, status) {
+    const { editComment, commentId } = this.props;
+    e.preventDefault();
+
+    editComment(commentId, { status });
+  }
+
   render() {
-    const { comment, commentId, createdAt, user, edited, currentUser, removeComment, subComments } = this.props;
+    const { comment, commentId, createdAt, user, edited, status, currentUser, removeComment, subComments } = this.props;
     const nestedComments = (subComments || []).map(c => (
         <Comment
           {...this.props}
@@ -72,6 +81,7 @@ class Comment extends Component {
           createdAt={c.createdAt}
           user={c.user}
           edited={c.edited}
+          status={c.status}
           key={c.id}
           subComments={c.subComments}
         />
@@ -89,6 +99,10 @@ class Comment extends Component {
           </div>
 
           {currentUser === user ? <div className="comment-header__actions">
+            <DropDownMenu value={status} onChange={::this.updateStatus}>
+              <MenuItem value="open" primaryText="Open"/>
+              <MenuItem value="resolved" primaryText="Resolved"/>
+            </DropDownMenu>
             <FlatButton label={this.state.edit ? 'Cancel' : 'Edit'} primary onClick={::this.handleEditClick}/>
             <FlatButton label="Delete" onClick={() => removeComment(commentId)} secondary/>
           </div> : null}
@@ -154,7 +168,7 @@ function mapDispatchToProps(dispatch) {
   return {
     removeComment: commentId => dispatch(removeCommentAction(commentId)),
     addComment: (comment, parentId) => dispatch(addCommentAction(comment, parentId)),
-    editComment: (commentId, comment) => dispatch(editCommentAction(commentId, comment)),
+    editComment: (commentId, updates) => dispatch(editCommentAction(commentId, updates)),
   }
 }
 

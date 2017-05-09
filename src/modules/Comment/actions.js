@@ -10,16 +10,12 @@ export function removeComment(commentId) {
   }
 }
 
-export function editComment(commentId, comment) {
+export function editComment(commentId, updates) {
   return (dispatch, getState) => {
     const { activeCommentable } = getState().commentable;
     const commentRef = firebaseDB.ref(`/commentables/${activeCommentable}/comments`);
 
-    const updates = {
-      edited: true,
-      updatedAt: database.ServerValue.TIMESTAMP,
-      comment,
-    };
+    updates.updatedAt = database.ServerValue.TIMESTAMP;
 
     commentRef.child(commentId).update(updates);
   }
