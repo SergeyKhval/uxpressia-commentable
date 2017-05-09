@@ -6,13 +6,19 @@ import FontIcon from 'material-ui/FontIcon';
 import Timestamp from 'react-timestamp';
 import ReactMarkdown from 'react-markdown';
 import CommentInput from '../CommentInput';
-import { removeComment as removeCommentAction, addComment as addCommentAction } from './actions';
+import {
+  removeComment as removeCommentAction,
+  addComment as addCommentAction,
+  editComment as editCommentAction,
+} from './actions';
 import './style.scss';
 
 class Comment extends Component {
   state = {
     reply: '',
     replyVisible: false,
+    edit: false,
+    editedComment: ''
   };
 
   handleReplyChange({ target }) {
@@ -31,8 +37,33 @@ class Comment extends Component {
     this.setState({ replyVisible: !this.state.replyVisible });
   }
 
+  handleEditClick() {
+    this.setState({
+      edit: !this.state.edit,
+      editedComment: this.props.comment,
+    });
+  }
+
+  handleEditedCommentChange({ target }) {
+    this.setState({
+      editedComment: target.value,
+    })
+  }
+
+  handleUpdateComment(e) {
+    const { editComment, commentId } = this.props;
+    e.preventDefault();
+
+    editComment(commentId, this.state.editedComment);
+
+    this.setState({
+      edit: false,
+      editedComment: '',
+    })
+  }
+
   render() {
-    const { comment, commentId, createdAt, user, currentUser, removeComment, subComments } = this.props;
+    const { comment, commentId, createdAt, user, edited, currentUser, removeComment, subComments } = this.props;
     const nestedComments = (subComments || []).map(c => (
         <Comment
           {...this.props}
@@ -40,6 +71,7 @@ class Comment extends Component {
           commentId={c.id}
           createdAt={c.createdAt}
           user={c.user}
+          edited={c.edited}
           key={c.id}
           subComments={c.subComments}
         />
@@ -51,17 +83,25 @@ class Comment extends Component {
         <div className="comment__header comment-header">
           <div className="comment-header__user">
             <FontIcon className="material-icons">face</FontIcon>
-            <span className="comment-user">{user} {currentUser === user ? ' (You)' : null} said:</span>
+            <span className="comment-user">
+              {user} {currentUser === user ? ' (You)' : null} said {edited ? '(edited)' : null}:
+            </span>
           </div>
 
           {currentUser === user ? <div className="comment-header__actions">
-            <FlatButton label="Edit" primary/>
+            <FlatButton label={this.state.edit ? 'Cancel' : 'Edit'} primary onClick={::this.handleEditClick}/>
             <FlatButton label="Delete" onClick={() => removeComment(commentId)} secondary/>
           </div> : null}
         </div>
 
         <div className="comment__body">
-          <ReactMarkdown source={comment} className="comment-text"/>
+          {this.state.edit ?
+            <CommentInput
+              handleSubmit={::this.handleUpdateComment}
+              handleChange={::this.handleEditedCommentChange}
+              value={this.state.editedComment}
+            /> :
+            <ReactMarkdown source={comment} className="comment-text"/>}
         </div>
 
         <div className="comment__footer comment-footer">
@@ -114,6 +154,7 @@ function mapDispatchToProps(dispatch) {
   return {
     removeComment: commentId => dispatch(removeCommentAction(commentId)),
     addComment: (comment, parentId) => dispatch(addCommentAction(comment, parentId)),
+    editComment: (commentId, comment) => dispatch(editCommentAction(commentId, comment)),
   }
 }
 

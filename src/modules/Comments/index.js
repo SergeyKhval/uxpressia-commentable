@@ -75,6 +75,7 @@ class Comments extends Component {
                 commentId={c.id}
                 createdAt={c.createdAt}
                 user={c.user}
+                edited={c.edited}
                 key={c.id}
                 subComments={c.subComments}
               />
