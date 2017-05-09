@@ -4,36 +4,54 @@ import { firebaseDB } from '../../services/firebase'
 export const COMMENTS_FETCH = 'COMMENTS_FETCH';
 export const COMMENTABLE_UNSET = 'COMMENTABLE_UNSET';
 
+function nestComments(commentList) {
+  const keys = Object.keys(commentList);
+
+  keys.forEach(key => {
+    const comment = commentList[key];
+
+    if (comment.parentId !== -1) {
+      const parent = commentList[comment.parentId];
+
+      if (parent) {
+        if (!parent.hasOwnProperty('subComments')) {
+          parent.subComments = [];
+        }
+
+        parent.subComments.push(comment);
+      }
+    }
+  });
+
+  return keys.map((key) => {
+    const comment = commentList[key];
+    comment.id = key;
+
+    return comment;
+  }).filter(comment => comment.parentId === -1);
+}
+
 export function fetchComments(commentableId) {
   const commentsRef = firebaseDB.ref(`/commentables/${commentableId}/comments`);
 
   return (dispatch) => {
     commentsRef.on('value', (snapshot) => {
       const comments = snapshot.val() || {};
-      const payload = Object.keys(comments).map(id => {
-        const { comment, createdAt, user } = comments[id];
-
-        return {
-          comment,
-          createdAt,
-          user,
-          id,
-        }
-      });
 
       dispatch({
         type: COMMENTS_FETCH,
-        payload,
+        payload: nestComments(comments),
       })
     })
   }
 }
 
-export function addComment(commentableId, comment) {
-  const commentsRef = firebaseDB.ref(`/commentables/${commentableId}/comments`);
-
+export function addComment(comment, parentId = -1) {
   return (dispatch, getState) => {
-    const { currentUser } = getState().users;
+    const state = getState();
+    const { currentUser } = state.users;
+    const { activeCommentable } = state.commentable;
+    const commentsRef = firebaseDB.ref(`/commentables/${activeCommentable}/comments`);
 
     const newComment = {
       user: currentUser,
@@ -41,6 +59,7 @@ export function addComment(commentableId, comment) {
       updatedAt: database.ServerValue.TIMESTAMP,
       edited: false,
       status: 'open',
+      parentId,
       comment,
     };
 

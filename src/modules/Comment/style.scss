@@ -1,6 +1,5 @@
 .comment {
   border-bottom: 1px solid lightgray;
-  padding: 1rem 0;
 
   &__body {
     padding-left: 32px;
@@ -13,6 +12,10 @@
   }
 
   &__footer {
+    padding-left: 32px;
+  }
+
+  &__reply {
     padding-left: 32px;
   }
 }
@@ -40,4 +43,8 @@
   &__time {
     flex-grow: 1;
   }
+}
+
+.nested-comments {
+  padding-left: 32px;
 }

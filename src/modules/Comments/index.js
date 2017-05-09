@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
-// import TextField from 'material-ui/TextField';
 import Drawer from 'material-ui/Drawer';
 import { MentionsInput, Mention } from 'react-mentions';
 import Comment from '../Comment';
@@ -46,10 +45,10 @@ class Comments extends Component {
   }
 
   handleFormSubmit(e) {
-    const { commentableId, addComment } = this.props;
+    const { addComment } = this.props;
 
     e.preventDefault();
-    addComment(commentableId, this.state.comment);
+    addComment(this.state.comment);
     this.setState({ comment: '' });
   }
 
@@ -78,6 +77,7 @@ class Comments extends Component {
                 createdAt={c.createdAt}
                 user={c.user}
                 key={c.id}
+                subComments={c.subComments}
               />
             ))}
           </div>
