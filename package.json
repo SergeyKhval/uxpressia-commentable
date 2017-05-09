@@ -4,8 +4,7 @@
   "description": "Project for Udacity nanodegree programm",
   "main": "index.js",
   "scripts": {
-    "start": "node bin/server.js",
-    "deploy": "gh-pages -d dist"
+    "start": "node bin/server.js"
   },
   "author": "Sergey Khval",
   "license": "MIT",
