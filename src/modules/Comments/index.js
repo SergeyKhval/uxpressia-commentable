@@ -68,11 +68,18 @@ class Comments extends Component {
           <div className="comments__header">
             <h2>Object {commentableId}</h2>
             <IconButton iconClassName="material-icons" onTouchTap={() => unsetCommentable()}>close</IconButton>
-
           </div>
 
           <div className="comments__body">
-            {comments.map(c => <Comment comment={c.comment} commentId={c.id} key={c.id}/>)}
+            {comments.map(c => (
+              <Comment
+                comment={c.comment}
+                commentId={c.id}
+                createdAt={c.createdAt}
+                user={c.user}
+                key={c.id}
+              />
+            ))}
           </div>
 
           <div className="comments__footer">
@@ -104,7 +111,7 @@ function mapStateToProps({ commentable, comments }) {
 function mapDispatchToProps(dispatch) {
   return {
     fetchComments: commentableId => dispatch(fetchCommentsAction(commentableId)),
-    addComment: (commentableId, comment) => addCommentAction(commentableId, comment),
+    addComment: (commentableId, comment) => dispatch(addCommentAction(commentableId, comment)),
     unsetCommentable: open => dispatch(unsetCommentableAction(open)),
   }
 }

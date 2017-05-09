@@ -1,4 +1,7 @@
 .comments {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   padding: 0 2rem;
   position: relative;
 
@@ -12,12 +15,13 @@
     }
   }
 
+  &__body {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
   &__footer {
     border-top: 1px solid black;
-    position: fixed;
-    right: 2rem;
-    bottom: 0;
-    left: 2rem;
   }
 }
 

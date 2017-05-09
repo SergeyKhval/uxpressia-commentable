@@ -1,3 +1,4 @@
+import { database } from 'firebase';
 import { firebaseDB } from '../../services/firebase'
 
 export const COMMENTS_FETCH = 'COMMENTS_FETCH';
@@ -9,7 +10,16 @@ export function fetchComments(commentableId) {
   return (dispatch) => {
     commentsRef.on('value', (snapshot) => {
       const comments = snapshot.val() || {};
-      const payload = Object.keys(comments).map(key => ({ id: key, comment: comments[key].comment }));
+      const payload = Object.keys(comments).map(id => {
+        const { comment, createdAt, user } = comments[id];
+
+        return {
+          comment,
+          createdAt,
+          user,
+          id,
+        }
+      });
 
       dispatch({
         type: COMMENTS_FETCH,
@@ -22,7 +32,20 @@ export function fetchComments(commentableId) {
 export function addComment(commentableId, comment) {
   const commentsRef = firebaseDB.ref(`/commentables/${commentableId}/comments`);
 
-  commentsRef.push({ comment });
+  return (dispatch, getState) => {
+    const { currentUser } = getState().users;
+
+    const newComment = {
+      user: currentUser,
+      createdAt: database.ServerValue.TIMESTAMP,
+      updatedAt: database.ServerValue.TIMESTAMP,
+      edited: false,
+      status: 'open',
+      comment,
+    };
+
+    commentsRef.push(newComment);
+  }
 }
 
 export function unsetCommentable(open) {
