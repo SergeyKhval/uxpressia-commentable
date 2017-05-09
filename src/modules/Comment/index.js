@@ -5,7 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import Timestamp from 'react-timestamp';
 import ReactMarkdown from 'react-markdown';
-import { MentionsInput, Mention } from 'react-mentions';
+import CommentInput from '../CommentInput';
 import { removeComment as removeCommentAction, addComment as addCommentAction } from './actions';
 import './style.scss';
 
@@ -78,16 +78,11 @@ class Comment extends Component {
         </div>
 
         <div className="comment__reply" style={{ display: this.state.replyVisible ? 'block' : 'none' }}>
-          <form onSubmit={::this.handleReplySubmit} className="comment-form">
-            <div className="comment-form__input">
-              <MentionsInput value={this.state.reply} onChange={::this.handleReplyChange}>
-                <Mention trigger="@" data={[{ id: 1, display: 'Sergey' }, { id: 2, display: 'Liza' }]}/>
-              </MentionsInput>
-            </div>
-            <div className="comment-form__button">
-              <FlatButton type="submit" label="Submit"/>
-            </div>
-          </form>
+          <CommentInput
+            handleSubmit={::this.handleReplySubmit}
+            handleChange={::this.handleReplyChange}
+            value={this.state.reply}
+          />
         </div>
 
         <div className="nested-comments">

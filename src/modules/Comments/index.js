@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import Drawer from 'material-ui/Drawer';
-import { MentionsInput, Mention } from 'react-mentions';
 import Comment from '../Comment';
+import CommentInput from '../CommentInput';
 import {
   fetchComments as fetchCommentsAction,
   addComment as addCommentAction,
@@ -83,16 +82,11 @@ class Comments extends Component {
           </div>
 
           <div className="comments__footer">
-            <form onSubmit={::this.handleFormSubmit} className="comment-form">
-              <div className="comment-form__input">
-                <MentionsInput value={this.state.comment} onChange={::this.handleInputChange}>
-                  <Mention trigger="@" data={[{ id: 1, display: 'Sergey' }, { id: 2, display: 'Liza' }]}/>
-                </MentionsInput>
-              </div>
-              <div className="comment-form__button">
-                <FlatButton type="submit" label="Submit"/>
-              </div>
-            </form>
+            <CommentInput
+              handleSubmit={::this.handleFormSubmit}
+              handleChange={::this.handleInputChange}
+              value={this.state.comment}
+            />
           </div>
         </div>
       </Drawer>
